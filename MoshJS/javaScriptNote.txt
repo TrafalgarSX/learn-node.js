@@ -1,0 +1,305 @@
+闭包是由函数以及声明该函数的词法环境组合而成的。该环境包含了这个闭包创建时作用域内的任何局部变量。
+
+javascript 的对象是动态的
+意思就是我们可以在声明对象之后也可以对对象进行添加和删除成员
+例circle.color='yellow'  添加
+删除   delete circle.color
+
+const的意思是不能再次声明对象，任然可以进行添加和删除成员。
+
+每个对象都有一个构造器属性，它引用了创建该对象的构造函数
+比如通过工厂函数创建一个对象，就引用了构造函数
+
+函数实际上是个对象
+
+javascript的两种数据类型
+值类型   Number String Boolean   null undefined Symbol
+引用类型  object array function
+
+值类型复制  值  即改变一个变量另一个不会改变  两个副本
+应用类型复制 的是它的地址
+object不是可枚举的
+
+for of循环只能用于可枚举的 如数组，map
+ 
+ 有两种方法进行对象的复制
+ 1、
+const another={};
+for(let key in circle){
+    another[key]=circle[key];
+}
+2、
+const another=Object.assign({},circle);
+3、
+const another={...circle} //... 拆分运算符 将对象拆解  
+读取所有对象的成员，然后复制到一个对象里
+
+
+垃圾回收机制  Garbage Collector
+
+Math对象
+Math.abs() 、Math.random()等
+
+String对象
+有两种类型的string  
+一种是值类型的string 一种是对象string 
+const another=new String('hi'); //Object
+const message='hi';  // String primitive
+当message.  时  javascript就做了转换，转换成了object
+
+ES6  
+Template
+const another=`This is my
+'first' message`
+//这种语法  所见即所得   你想怎么输出  就用反引号写
+模板语法中，我们使用美元符号和大括号来指明一个占位符  ${}
+let name='guo';
+const another=`hi ${name}  ${2+3} `
+
+
+Date Object
+//Date有多个构造函数
+const date=new Date();
+
+===对于object比较的是地址是否一样   Same
+Equal比较的是属性、属性值是否一样
+
+
+数组 Array
+const 不会阻止我们修改它声明的数组
+const number=[3,4]
+//end  结尾添加
+number.push(5,6)
+//Beginning
+number.unshift(1,2)
+//Middle
+number.splice(2,0,'a','b');
+
+取出数据
+//end 
+number.pop()
+//Beginning
+number.shift()
+
+
+查找数组中的元素决定于是值类型还是引用类型
+number.indexOf('a',fromIndex);//返回下表  fromIndex从哪里开始查找
+lastIndexOf  最后一个匹配的
+number.includes  返回真假  true false
+
+查找对象
+includes没有用了  对于对象  因为是两个不同的对象  有不同的地址
+find 参数是函数  谓词函数
+const courses=[
+{id:1,name:'a'},
+{id:2,name:'b'},
+
+];
+
+courses.find(function(course){
+    return course.name==='a';
+});
+findIndex  作用机制一样  返回的是下标
+
+ES6   用箭头函数语法
+箭头函数  当我们需要输入一个函数作为另一个函数的参数时
+=>胖箭头   只有一个参数时 可以去掉参数的括号
+courses.find((course)=>{
+    return course.name==='a';
+});
+
+Empty Array
+number=[1,2,3,4]
+numbers=[];  清空数组
+但是这会导致原数组可能无法清除
+let another=numbers; 这时 numbers指向空数组   another 指向原数组
+
+numbers.length=0  没有上述问题
+numbers.splice(0,numbers.length)
+
+
+合并两个数组  和分割一个数组
+
+const first=[1,2,3];
+const second=[4,5,6]
+const combined=first.concat(second);
+
+分割  
+const slice=combined.slice(不同参数不同返回);
+
+分割数组时，值类型被直接复制到新的数组
+如果时引用类型，只有他们的引用被复制到新的数组  
+意味着，输出的新数组中对象元素指向的是之前同一个对象
+
+const combined=[...first,'a',...second]  拆分运算符 
+
+数组遍历 
+for of 
+numbers.forEach(function(number){
+    console.log(number);
+});
+numbers.forEach((number)=>{
+    console.log(number);
+});
+
+numbers.join(',');  返回一个字符串
+结果  1，2，3  在数组元素之间加  ,
+
+const message='this is my first message';
+const parts=message.split(' ');  //按空格' '分开
+变成了一个数组
+
+url中不能有空格
+
+numbers.sort();  对于数组和字符串
+
+对于对象
+const courses={
+    {id:1,name:'node.js'},
+    {id:2,name:'js'},
+}
+courses.sort(function(a,b){
+    //a<b => -1
+    //a>b=> 1
+    //a===b=>0
+    const nameA=a.name.toLowerCase();//同一变大写或小写好比较
+    const nameA=a.name.toLowerCase();
+    
+    if(a.name<b.name) return -1;
+    if(a.name>b.name) return 1;
+    return 0;
+});
+
+检测数组中的每一个元素
+every some
+//每一个都符合条件  every
+const allPositive=numbers.every(function(value){//判断数组中的每一个元素是不是正数
+    return value>=0;
+});
+//至少有一个符合条件  some
+const atLeastOnePositive=numbers.some(function(value){//判断数组中是否有正数
+    return value>=0;
+});
+filter  遍历元素  然后每个元素执行回调函数
+const filtered=numbers.filter(function(value){
+    return value>=0;
+});
+
+map映射  map方法将元素映射为其他东西
+
+const items=filtered.map(n=> '<li>'+n+'</li>');  将数映射为string
+
+const items=filtered.map(n=>({//如果想映射为对象，需要将函数体外加一个括号（{函数体}）
+    const obj={value:n};
+    return obj;
+}));
+
+缩减数组
+reduce  将整个数组缩减为一个数组或字符串
+const sum=numbers.reduce((accumulator,currentValue)=>{
+    return accumulator+currentValue;
+},0);//0是累计值的初始值  即0是给 accumulator赋初值的  初始值  
+
+function 的更多细节
+//函数声明
+function walk(){
+    console.log('walk');
+}//这里可以不加  分号 ;  默认习惯
+
+函数表达式  function Expression 分为有名的和匿名的 
+有名的函数有个名   匿名的直接function (){};
+let run=function (){};
+let x=1;
+
+区别
+你可以在函数声明之前调用函数  hoisting  将函数声明提前到所有代码之前
+函数表达式不可以
+
+javascript是一个动态语言 
+let x=1;
+x='a';   //可以改变变量类型
+函数参数有几个不重要 形参和实参数目可以不一致 不影响
+
+arguments 是形参数组 
+for(let value of arguments){
+    total+=value;
+}
+余下操作符 
+function sum(...args) {//...在这里用时，就时余下操作符
+    console.log(args);   
+    //如果我们在参数前使用余下操作符，他会将我门输入给函数的所有参数转到一个数组中
+}
+
+余下参数应该是参数的最后一个
+
+参数默认值，和其他语言一样，一旦给一个参数默认值，后面的参数都得有默认值
+function interest(principal,rate=3.5,years=3){
+    return principal * rate/100*years;
+}
+
+getter and setter  
+const person={
+    firstName='Mosh',
+    lastName:'guo',
+    fullName(){  //ES6简化函数写法   也可以写成键值对   值是一个函数
+        return `${person.firstName} ${person.lastName}`;
+    }
+    //getter  就成了getter
+    get fullName(){  //ES6写法   也可以写成键值对   值是一个函数
+        return `${person.firstName} ${person.lastName}`;
+    },
+    //setter 加个set
+    set fullName(value){
+        const parts=value.split(' ');
+        this.firstName=parts[0];
+        this.lastName=parts[1];
+    }
+};
+console.log(person.fullName);
+
+try catch   错误处理 防御性编程
+普通的  抛出错误
+if(typeof value !=='string') return ; 
+  throw new Error('Value is not a string.');
+try{
+    person.fullName=null;
+}
+catch(e){
+    console.log(e);
+    alert(e);
+}
+
+本地或全局作用域
+    本地变量会覆盖全局变量   这个和其他函数一样
+let var
+ let创建出来的变量是代码块作用域的
+ var创建出来的变量是函数作用域的
+   而且var创建出来的变量会加入window对象变成其属性，这个是不好的
+   如果你用了第三方库，别人的变量命名和你一样，且都是用var声明的，
+这样会导致别人的变量覆盖你的变量，造成灾难性的后果
+
+`this` keyword   
+如果是对象中的普通函数（即方法）  这个函数中的this 是 本身 这个对象
+
+对于普通函数（不在对象中声明的，或者作为对象某个方法中的回调函数）
+   
+    function showTags(tag){
+        this.tag=tag; //如果在函数里console.log(this) 显示的是window对象
+    }
+    对于普通函数中的this ,在没有对函数进行new之前this指的是window对象
+    进行了new之后，指的就是本身了
+
+改变this 的值 
+ 作为回调函数，ES6箭头函数中的this 和普通函数中this 不同，它继承了容器中的
+
+function palyVideo(){
+    console.log(this);
+}
+call bind apply都可以改变this对象  区别是  参数不同，可以查看API
+palyVideo.call({name:'Mosh'});//这个可以传入一个对象，然后this 会绑定这个对象
+palyVideo.apply({name:'Mosh'});
+palyVideo.bind({name:'Mosh'});
+
+终于结束了。诶，真的希望早一点看到这些视频，早一点学习
+
+面向对象函数编程是一种编程风格或编程范例
